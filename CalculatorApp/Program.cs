@@ -1,43 +1,62 @@
-﻿Console.WriteLine("Console Calculator in C#\r");
+﻿using CalculatorLibrary;
+
+Console.WriteLine("Console Calculator in C#\r");
 Console.WriteLine("------------------------\n");
+var endApp = false;
+var calculator = new Calculator();
+var appUsed = 0;
 
-Console.WriteLine("Type a number, and then press Enter");
-double num1 = Convert.ToDouble(Console.ReadLine());
+while (!endApp)
+{
+    Console.Write("Enter a number: ");
+    var numInput1 = Console.ReadLine()?.Trim();
+    double cleanNum1;
+    while (!double.TryParse(numInput1, out cleanNum1))
+    {
+        Console.Write("This is not a valid number, please enter a number: ");
+        numInput1 = Console.ReadLine()?.Trim();
+    }
 
-Console.WriteLine("Type another number, and then press Enter");
-double num2 = Convert.ToDouble(Console.ReadLine());
+    Console.Write("Enter another number: ");
+    var numInput2 = Console.ReadLine();
+    double cleanNum2;
+    while (!double.TryParse(numInput2, out cleanNum2))
+    {
+        Console.Write("This is not a valid entry, please enter a number: ");
+        numInput2 = Console.ReadLine();
+    }
 
-Console.WriteLine($@"Choose an option from the following list: 
+    Console.WriteLine(@"Choose an operator from the following list: 
 A - Add
 S - Subtract
 M - Multiply
 D - Divide");
-Console.WriteLine("---------------------------------------------");
+    Console.WriteLine("----------------------------------------------------------------------------");
+    var op = Console.ReadLine()?.Trim().ToLower();
 
-switch (Console.ReadLine()?.Trim().ToUpper())
-{
-    case "A":
-        Console.WriteLine($"Your result: {num1} + {num2} = " + (num1 + num2));
-        break;
-    case "S":
-        Console.WriteLine($"Your result: {num1} + {num2} = " + (num1 - num2));
-        break;
-    case "M":
-        Console.WriteLine($"Your result: {num1} * {num2} = " + (num1 * num2));
-        break;
-    case "D":
-        while (num2 == 0)
+    try
+    {
+        var result = calculator.DoOperation(cleanNum1, cleanNum2, op);
+        if (double.IsNaN(result))
+                        Console.WriteLine("This operation will result in a mathematical error.\n");
+        else
         {
-            Console.WriteLine("Enter a non-zero divisor");
-            num2 = Convert.ToDouble(Console.ReadLine());
+            Console.WriteLine("your result: {0:0.##}\n", result);
+            appUsed++;
+            Console.WriteLine($"You've used the calculator {appUsed} times!");
         }
-        Console.WriteLine($"Your result: {num1} / {num2} = " + (num1 / num2));
-        break;
-    //default:
-    //    Console.WriteLine("Invalid entry, please make a selection");
-    //    Thread.Sleep(2000);
-    //    break;
-}
+    }
+    catch (Exception e)
+    {
+        Console.WriteLine("Oh no! An exception occurred trying to do the math.\n - Details: " + e.Message);
+    }
 
-Console.WriteLine("Press any key to close the Calculator console app");
-Console.ReadKey();
+    Console.WriteLine("------------------------\n");
+
+    Console.WriteLine("Press 'n' and Enter to close the app, or press any other key and Enter to continue: ");
+    if (Console.ReadLine() == "n") endApp = true;
+
+    Console.WriteLine("\n");
+}
+calculator.Finish();
+        
