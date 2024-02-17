@@ -13,34 +13,47 @@ namespace CalculatorLibrary;
             writer.WritePropertyName("Operation");
             writer.WriteStartArray();
         }
-        public double DoOperation(double num1, double num2, string op)
+        public double DoOperation(double number1, double number2, string? op)
         {
             double result = double.NaN;
             writer.WriteStartObject();
             writer.WritePropertyName("Operand1");
-            writer.WriteValue(num1);
+            writer.WriteValue(number1);
             writer.WritePropertyName("Operand2");
-            writer.WriteValue(num2);
+            writer.WriteValue(number2);
             writer.WritePropertyName("Operation");
 
             switch (op)
             {
                 case "a":
-                    result = num1 + num2;
+                    result = number1 + number2;
+                    CalculationDataStore.AddLastCalculation(result);
+                    var calculations = CalculationDataStore.Results;
+                    foreach (var calculation in calculations)
+                    {
+                        Console.WriteLine($"{calculation}");
+                    }
+                    var lastCalculation = calculations.LastOrDefault();
+                    Console.WriteLine($"The last calculation done is: {lastCalculation}");
+                    Console.WriteLine("Would you like to empty the list?");
+                    var input = Console.ReadLine();
+                    if (input == "y")
+                        CalculationDataStore.Results.Clear();
                     writer.WriteValue("Add");
+                    Console.ReadKey();
                     break;
                 case "s":
-                    result = num1 - num2;
+                    result = number1 - number2;
                     writer.WriteValue("Subtract");
                     break;
                 case "m":
-                    result = num1 * num2;
+                    result = number1 * number2;
                     writer.WriteValue("Multiply");
                     break;
                 case "d":
-                    if (num2 != 0)
+                    if (number2 != 0)
                     {
-                        result = num1 / num2;
+                        result = number1 / number2;
                     }
                     writer.WriteValue("Divide");
                     break;
@@ -51,6 +64,17 @@ namespace CalculatorLibrary;
             writer.WriteValue(result);
             writer.WriteEndObject();
             return result;
+        }
+
+        public static double ValidateNumbers(string? number)
+        {
+            double cleanNumber;
+            while (!double.TryParse(number, out cleanNumber))
+            {
+                Console.Write("Invalid entry, please enter a number: ");
+                number = Console.ReadLine();
+            }
+            return cleanNumber;
         }
 
         public void Finish()

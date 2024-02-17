@@ -1,18 +1,12 @@
-﻿using CalculatorLibrary.Models;
-
-namespace CalculatorLibrary;
+﻿namespace CalculatorLibrary;
 
 public class CalculationDataStore
 {
-    public static List<CalculatorData> Data = [];
+    public static List<double> Results = [];
 
-    public void AddToHistory(double result, CalculationType calculationType)
+    public static double AddLastCalculation(double result)
     {
-        Data.Add(new CalculatorData
-        {
-            Date = DateTime.Now,
-            CalculatedResult = result,
-            Type = calculationType
-        });
+        Results.Add(result);
+        return result;
     }
 }
