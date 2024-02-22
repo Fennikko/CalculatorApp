@@ -5,7 +5,7 @@ var calculator = new Calculator();
 
 while (!endApp)
 {
-    calculator.CalculatorHeader();
+    Calculator.CalculatorHeader();
     Console.WriteLine(@"Choose an operator from the following list: 
 A - Add
 S - Subtract

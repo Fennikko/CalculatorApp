@@ -2,35 +2,37 @@
 namespace CalculatorLibrary;
     public class Calculator
     {
-        JsonWriter writer;
+        readonly JsonWriter _writer;
         public Calculator()
         {
-            StreamWriter logFile = File.CreateText(@"c:\temp\calculatorlog.json");
+            var logFile = File.CreateText(@"c:\temp\calculatorlog.json");
             logFile.AutoFlush = true;
-            writer = new JsonTextWriter(logFile);
-            writer.Formatting = Formatting.Indented;
-            writer.WriteStartObject();
-            writer.WritePropertyName("Operation");
-            writer.WriteStartArray();
+        _writer = new JsonTextWriter(logFile)
+        {
+            Formatting = Formatting.Indented
+        };
+        _writer.WriteStartObject();
+            _writer.WritePropertyName("Operation");
+            _writer.WriteStartArray();
         }
         public void JsonWriter(double firstNumber, double? secondNumber, double result, string operationType)
         {
-            writer.WriteStartObject();
-            writer.WritePropertyName("Operand1");
-            writer.WriteValue(firstNumber);
-            writer.WritePropertyName("Operand2");
-            writer.WriteValue(secondNumber);
-            writer.WritePropertyName("Operation");
-            writer.WriteValue(operationType);
-            writer.WritePropertyName("Result");
-            writer.WriteValue(result);
-            writer.WriteEndObject();
+            _writer.WriteStartObject();
+            _writer.WritePropertyName("Operand1");
+            _writer.WriteValue(firstNumber);
+            _writer.WritePropertyName("Operand2");
+            _writer.WriteValue(secondNumber);
+            _writer.WritePropertyName("Operation");
+            _writer.WriteValue(operationType);
+            _writer.WritePropertyName("Result");
+            _writer.WriteValue(result);
+            _writer.WriteEndObject();
         }
         public void Finish()
         {
-            writer.WriteEndArray();
-            writer.WriteEndObject();
-            writer.Close();
+            _writer.WriteEndArray();
+            _writer.WriteEndObject();
+            _writer.Close();
         }
 
 
@@ -62,20 +64,17 @@ namespace CalculatorLibrary;
             case "t":
                 Trigonometry();
                 break;
-
-            default:
-                break;
         }
     }
 
-    public void CalculatorHeader()
+    public static void CalculatorHeader()
     {
         Console.Clear();
         Console.WriteLine("Console Calculator in C#\r");
         Console.WriteLine("------------------------\n");
     }
 
-    public double ValidateNumbers(string? number)
+    public static double ValidateNumbers(string? number)
     {
         double cleanNumber;
         while (!double.TryParse(number, out cleanNumber))
@@ -87,11 +86,11 @@ namespace CalculatorLibrary;
         return cleanNumber;
     }
 
-    double GetFirstNumber()
+    private static double GetFirstNumber()
     {
         var calculations = CalculationDataStore.Results;
-        var lastCalculation = calculations.LastOrDefault()!;
-        double cleanFirstNumber = double.NaN;
+        var lastCalculation = calculations.LastOrDefault();
+        var cleanFirstNumber = double.NaN;
 
         if (!double.IsNaN(lastCalculation) && calculations.Count != 0)
         {
@@ -109,7 +108,7 @@ namespace CalculatorLibrary;
                         break;
                     case ConsoleKey.N:
                     {
-                        CalculatorHeader();
+                            CalculatorHeader();
                         Console.Write("Enter a number: ");
                         var firstNumber = Console.ReadLine()?.Trim().ToLower();
                         cleanFirstNumber = ValidateNumbers(firstNumber);
@@ -129,7 +128,7 @@ namespace CalculatorLibrary;
         return cleanFirstNumber;
     }
 
-    void DisplayResults(double result, double cleanFirstNumber, double? cleanSecondNumber,string operationType)
+    private void DisplayResults(double result, double cleanFirstNumber, double? cleanSecondNumber,string operationType)
     {
         try
         {
@@ -158,33 +157,31 @@ namespace CalculatorLibrary;
     public double Addition()
     {
         var operationType = "Add";
-        double result = double.NaN;
         var cleanFirstNumber = GetFirstNumber();
         CalculatorHeader();
         Console.Write("Enter your second number: ");
         var secondNumber = Console.ReadLine()?.Trim().ToLower();
         var cleanSecondNumber = ValidateNumbers(secondNumber);
-        result = cleanFirstNumber + cleanSecondNumber;
+        var result = cleanFirstNumber + cleanSecondNumber;
         DisplayResults(result,cleanFirstNumber,cleanSecondNumber, operationType);
         return result;
     }
     public double Subtraction()
     {
         var operationType = "Subtract";
-        double result = double.NaN;
         var cleanFirstNumber = GetFirstNumber();
         CalculatorHeader();
         Console.Write("Enter your second number: ");
         var secondNumber = Console.ReadLine()?.Trim().ToLower();
         var cleanSecondNumber = ValidateNumbers(secondNumber);
-        result = cleanFirstNumber - cleanSecondNumber;
+        var result = cleanFirstNumber - cleanSecondNumber;
         DisplayResults(result, cleanFirstNumber, cleanSecondNumber, operationType);
         return result;
     }
     public double Multiplication()
     {
         var operationType = "Multiply";
-        double result = double.NaN;
+        double result;
         var cleanFirstNumber = GetFirstNumber();
         CalculatorHeader();
         Console.Write("Enter your second number: ");
@@ -197,7 +194,7 @@ namespace CalculatorLibrary;
     public double Division()
     {
         var operationType = "Divide";
-        double result = double.NaN;
+        double result;
         var cleanFirstNumber = GetFirstNumber();
         CalculatorHeader();
         Console.Write("Enter your second number: ");
@@ -218,7 +215,7 @@ namespace CalculatorLibrary;
     public double SquareRoot()
     {
         var operationType = "Square Root";
-        double result = double.NaN;
+        double result;
         var cleanFirstNumber = GetFirstNumber();
         double? secondNumberPlaceHolder = null;
         CalculatorHeader();
@@ -230,7 +227,7 @@ namespace CalculatorLibrary;
     public double PowerOf()
     {
         var operationType = "Power of";
-        double result = double.NaN;
+        double result;
         var cleanFirstNumber = GetFirstNumber();
         CalculatorHeader();
         Console.Write("Enter your second number: ");
@@ -244,7 +241,7 @@ namespace CalculatorLibrary;
     public double PowerOfTen()
     {
         var operationType = "Power of 10";
-        double result = double.NaN;
+        double result;
         var cleanFirstNumber = 10;
         CalculatorHeader();
         Console.Write("Enter your number: ");
