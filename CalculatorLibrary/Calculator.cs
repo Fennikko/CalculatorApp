@@ -13,7 +13,7 @@ namespace CalculatorLibrary;
             writer.WritePropertyName("Operation");
             writer.WriteStartArray();
         }
-        public void JsonWriter(double firstNumber, double secondNumber, double result)
+        public void JsonWriter(double firstNumber, double? secondNumber, double result, string operationType)
         {
             writer.WriteStartObject();
             writer.WritePropertyName("Operand1");
@@ -21,7 +21,7 @@ namespace CalculatorLibrary;
             writer.WritePropertyName("Operand2");
             writer.WriteValue(secondNumber);
             writer.WritePropertyName("Operation");
-            writer.WriteValue("Add");
+            writer.WriteValue(operationType);
             writer.WritePropertyName("Result");
             writer.WriteValue(result);
             writer.WriteEndObject();
@@ -50,19 +50,32 @@ namespace CalculatorLibrary;
             case "d":
                 Division();
                 break;
+            case "sqrt":
+                SquareRoot();
+                break;
+            case "p":
+                PowerOf();
+                break;
+            case "p10":
+                PowerOfTen();
+                break;
+            case "t":
+                Trigonometry();
+                break;
+
             default:
                 break;
         }
     }
 
-    public static void CalculatorHeader()
+    public void CalculatorHeader()
     {
         Console.Clear();
         Console.WriteLine("Console Calculator in C#\r");
         Console.WriteLine("------------------------\n");
     }
 
-    public static double ValidateNumbers(string? number)
+    public double ValidateNumbers(string? number)
     {
         double cleanNumber;
         while (!double.TryParse(number, out cleanNumber))
@@ -74,7 +87,7 @@ namespace CalculatorLibrary;
         return cleanNumber;
     }
 
-    static double GetFirstNumber()
+    double GetFirstNumber()
     {
         var calculations = CalculationDataStore.Results;
         var lastCalculation = calculations.LastOrDefault()!;
@@ -97,7 +110,7 @@ namespace CalculatorLibrary;
                     case ConsoleKey.N:
                     {
                         CalculatorHeader();
-                        Console.Write("Enter your first number: ");
+                        Console.Write("Enter a number: ");
                         var firstNumber = Console.ReadLine()?.Trim().ToLower();
                         cleanFirstNumber = ValidateNumbers(firstNumber);
                     }
@@ -108,7 +121,7 @@ namespace CalculatorLibrary;
         else
         {
             CalculatorHeader();
-            Console.Write("Enter your first number: ");
+            Console.Write("Enter a number: ");
             var firstNumber = Console.ReadLine()?.Trim().ToLower();
             cleanFirstNumber = ValidateNumbers(firstNumber);
         }
@@ -116,7 +129,7 @@ namespace CalculatorLibrary;
         return cleanFirstNumber;
     }
 
-    void DisplayResults(double result, double cleanFirstNumber, double cleanSecondNumber)
+    void DisplayResults(double result, double cleanFirstNumber, double? cleanSecondNumber,string operationType)
     {
         try
         {
@@ -131,7 +144,7 @@ namespace CalculatorLibrary;
                 CalculatorHeader();
                 Console.WriteLine("Your result: {0:0.##}\n", result);
                 CalculationDataStore.AddLastCalculation(result);
-                JsonWriter(cleanFirstNumber, cleanSecondNumber, result);
+                JsonWriter(cleanFirstNumber, cleanSecondNumber, result, operationType);
             }
         }
         catch (Exception e)
@@ -144,6 +157,7 @@ namespace CalculatorLibrary;
 
     public double Addition()
     {
+        var operationType = "Add";
         double result = double.NaN;
         var cleanFirstNumber = GetFirstNumber();
         CalculatorHeader();
@@ -151,11 +165,12 @@ namespace CalculatorLibrary;
         var secondNumber = Console.ReadLine()?.Trim().ToLower();
         var cleanSecondNumber = ValidateNumbers(secondNumber);
         result = cleanFirstNumber + cleanSecondNumber;
-        DisplayResults(result,cleanFirstNumber,cleanSecondNumber);
+        DisplayResults(result,cleanFirstNumber,cleanSecondNumber, operationType);
         return result;
     }
     public double Subtraction()
     {
+        var operationType = "Subtract";
         double result = double.NaN;
         var cleanFirstNumber = GetFirstNumber();
         CalculatorHeader();
@@ -163,11 +178,12 @@ namespace CalculatorLibrary;
         var secondNumber = Console.ReadLine()?.Trim().ToLower();
         var cleanSecondNumber = ValidateNumbers(secondNumber);
         result = cleanFirstNumber - cleanSecondNumber;
-        DisplayResults(result, cleanFirstNumber, cleanSecondNumber);
+        DisplayResults(result, cleanFirstNumber, cleanSecondNumber, operationType);
         return result;
     }
     public double Multiplication()
     {
+        var operationType = "Multiply";
         double result = double.NaN;
         var cleanFirstNumber = GetFirstNumber();
         CalculatorHeader();
@@ -175,11 +191,12 @@ namespace CalculatorLibrary;
         var secondNumber = Console.ReadLine()?.Trim().ToLower();
         var cleanSecondNumber = ValidateNumbers(secondNumber);
         result = cleanFirstNumber * cleanSecondNumber;
-        DisplayResults(result, cleanFirstNumber, cleanSecondNumber);
+        DisplayResults(result, cleanFirstNumber, cleanSecondNumber, operationType);
         return result;
     }
     public double Division()
     {
+        var operationType = "Divide";
         double result = double.NaN;
         var cleanFirstNumber = GetFirstNumber();
         CalculatorHeader();
@@ -194,8 +211,120 @@ namespace CalculatorLibrary;
             cleanSecondNumber = ValidateNumbers(secondNumber);
         }
         result = cleanFirstNumber / cleanSecondNumber;
-        DisplayResults(result, cleanFirstNumber, cleanSecondNumber);
+        DisplayResults(result, cleanFirstNumber, cleanSecondNumber, operationType);
         return result;
     }
 
+    public double SquareRoot()
+    {
+        var operationType = "Square Root";
+        double result = double.NaN;
+        var cleanFirstNumber = GetFirstNumber();
+        double? secondNumberPlaceHolder = null;
+        CalculatorHeader();
+        result = Math.Sqrt(cleanFirstNumber);
+        DisplayResults(result,cleanFirstNumber,secondNumberPlaceHolder, operationType);
+        return result;
+    }
+
+    public double PowerOf()
+    {
+        var operationType = "Power of";
+        double result = double.NaN;
+        var cleanFirstNumber = GetFirstNumber();
+        CalculatorHeader();
+        Console.Write("Enter your second number: ");
+        var secondNumber = Console.ReadLine()?.Trim().ToLower();
+        var cleanSecondNumber = ValidateNumbers(secondNumber);
+        result = Math.Pow(cleanFirstNumber, cleanSecondNumber);
+        DisplayResults(result,cleanFirstNumber,cleanSecondNumber,operationType);
+        return result;
+    }
+
+    public double PowerOfTen()
+    {
+        var operationType = "Power of 10";
+        double result = double.NaN;
+        var cleanFirstNumber = 10;
+        CalculatorHeader();
+        Console.Write("Enter your number: ");
+        var secondNumber = Console.ReadLine()?.Trim().ToLower();
+        var cleanSecondNumber = ValidateNumbers(secondNumber);
+        result = Math.Pow(cleanFirstNumber, cleanSecondNumber);
+        DisplayResults(result, cleanFirstNumber, cleanSecondNumber, operationType);
+        return result;
+    }
+
+    public double Trigonometry()
+    {
+        var operationType = "";
+        double result = double.NaN;
+        var trigRunning = true;
+        var cleanFirstNumber = GetFirstNumber();
+        double? secondNumberPlaceHolder = null;
+        double radians = cleanFirstNumber * Math.PI / 180;
+        while (trigRunning)
+        {
+            CalculatorHeader();
+            Console.WriteLine($@"Choose your trigonometry function from the list below: 
+sin - Sine
+cos - Cosine
+tan - Tangent
+cot - Cotangent
+sec - Secant
+csc - Cosecant");
+            Console.WriteLine("--------------------------------------------------------");
+            var trigSelection = Console.ReadLine()?.Trim().ToLower();
+            switch (trigSelection)
+            {
+                case "sin":
+                {
+                    operationType = "Sine";
+                    result = Math.Sin(radians);
+                    trigRunning = false;
+                } break;
+                case "cos":
+                {
+                    operationType = "Cosine";
+                    result = Math.Cos(radians);
+                    trigRunning = false;
+                } break;
+                case "tan":
+                {
+                    operationType = "Tangent";
+                    result = Math.Tan(radians);
+                    trigRunning = false;
+                } break;
+                case "cot":
+                {
+                    operationType = "Cotangent";
+                    result = 1 / Math.Tan(radians);
+                    trigRunning = false;
+                } break;
+                case "sec":
+                {
+                    operationType = "Secant";
+                    result = 1 / Math.Cos(radians);
+                    trigRunning = false;
+                } break;
+                case "csc":
+                {
+                    operationType = "Cosecant";
+                    result = 1 / Math.Sin(radians);
+                    trigRunning = false;
+                } break;
+                default:
+                {
+                    Console.WriteLine("Invalid selection, please select a trigonometry function");
+                    Thread.Sleep(3000);
+                    continue;
+                }
+
+            }
+        }
+        DisplayResults(result, cleanFirstNumber, secondNumberPlaceHolder, operationType);
+
+        return result;
+
+    }
 }

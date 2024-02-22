@@ -1,37 +1,29 @@
 ﻿using CalculatorLibrary;
 
-
 var endApp = false;
 var calculator = new Calculator();
-var appUsed = 0;
-var menu = new Menu();
 
-//while (!endApp)
-//{
-//    if (appUsed == 0)
-//    {
-//        menu.FirstRun(calculator);
-//        appUsed++;
+while (!endApp)
+{
+    calculator.CalculatorHeader();
+    Console.WriteLine(@"Choose an operator from the following list: 
+A - Add
+S - Subtract
+M - Multiply
+D - Divide
+SQRT - Square Root
+P - Power of
+P10 - Power of 10
+T - Trigonometry"); 
+    Console.WriteLine("---------------------------------------------");
+    var op = Console.ReadLine()?.Trim().ToLower();
+    calculator.DoOperation(op);
+    Console.Write("Press 'n' to close the app, or press any other key to continue: ");
+    if (Console.ReadKey().Key == ConsoleKey.N) endApp = true;
 
-//        Console.WriteLine("------------------------\n");
+    Console.WriteLine("\n");
 
-//        Console.Write("Press 'n' to close the app, or press any other key to continue: ");
-//        if (Console.ReadKey().Key == ConsoleKey.N) endApp = true;
 
-//        Console.WriteLine("\n");
-//    }
-//    else
-//    {
-//        menu.NotFirstRun(calculator);
-//        appUsed++;
+}
 
-//        Console.WriteLine("------------------------\n");
-
-//        Console.Write("Press 'n' to close the app, or press any other key to continue: ");
-//        if (Console.ReadKey().Key == ConsoleKey.N) endApp = true;
-//    }
-
-//}
-
-calculator.Division();
 calculator.Finish();
