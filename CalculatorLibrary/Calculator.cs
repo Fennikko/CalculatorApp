@@ -194,7 +194,6 @@ namespace CalculatorLibrary;
     public double Division()
     {
         var operationType = "Divide";
-        double result;
         var cleanFirstNumber = GetFirstNumber();
         CalculatorHeader();
         Console.Write("Enter your second number: ");
@@ -207,7 +206,7 @@ namespace CalculatorLibrary;
             secondNumber = Console.ReadLine()?.Trim().ToLower();
             cleanSecondNumber = ValidateNumbers(secondNumber);
         }
-        result = cleanFirstNumber / cleanSecondNumber;
+        var result = cleanFirstNumber / cleanSecondNumber;
         DisplayResults(result, cleanFirstNumber, cleanSecondNumber, operationType);
         return result;
     }
